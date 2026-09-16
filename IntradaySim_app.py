@@ -3,10 +3,34 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime
 import time
-
-# --- CLEAN IMPORT ---
-# This pulls your functions directly from your GBM_sim.py file!
 from GBM_sim import simulate_gbm_paths, evaluate_theta_retention_engine
+
+# --- PASSWORD PROTECTION BLOCK ---
+def check_password():
+    """Returns True if the user entered the correct password."""
+    def password_entered():
+        if st.session_state["password"] == st.secrets["password"]:
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # Remove password from session state for security
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # First run, show input for password
+        st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
+        return False
+    elif not st.session_state["password_correct"]:
+        # Password incorrect, show input + error
+        st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
+        st.error("😕 Password incorrect")
+        return False
+    else:
+        # Password correct
+        return True
+
+if not check_password():
+    st.stop()  # Halts the app here until the correct password is provided
+# ---------------------------------
 
 st.set_page_config(page_title="Live Edge Tracker", layout="wide")
 
