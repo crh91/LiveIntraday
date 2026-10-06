@@ -8,25 +8,27 @@ from GBM_sim import simulate_gbm_paths, evaluate_theta_retention_engine
 # --- PASSWORD PROTECTION BLOCK ---
 def check_password():
     """Returns True if the user entered the correct password."""
-    def password_entered():
-        if st.session_state["password"] == st.secrets["password"]:
-            st.session_state["password_correct"] = True
-            del st.session_state["password"]  # Remove password from session state for security
-        else:
-            st.session_state["password_correct"] = False
-
     if "password_correct" not in st.session_state:
-        # First run, show input for password
-        st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
+        st.session_state["password_correct"] = False
+
+    if not st.session_state["password_correct"]:
+        # Ask for the password
+        password = st.text_input("Enter Password", type="password")
+        
+        # Check the password once they type something
+        if password:
+            # First, check if secrets are loaded correctly to prevent KeyError
+            if "password" not in st.secrets:
+                st.error("Secret 'password' not found in Streamlit Cloud settings!")
+                return False
+
+            if password == st.secrets["password"]:
+                st.session_state["password_correct"] = True
+                st.rerun() 
+            else:
+                st.error("😕 Password incorrect")
         return False
-    elif not st.session_state["password_correct"]:
-        # Password incorrect, show input + error
-        st.text_input("Enter Password", type="password", on_change=password_entered, key="password")
-        st.error("😕 Password incorrect")
-        return False
-    else:
-        # Password correct
-        return True
+    return True
 
 if not check_password():
     st.stop()  # Halts the app here until the correct password is provided
