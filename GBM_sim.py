@@ -125,22 +125,22 @@ def evaluate_theta_retention_engine(paths, K, initial_dte, eod_dte, intraday_iv,
 
 if __name__ == "__main__":
     # --- Input Parameters ---
-    S0 = 74250
-    K = 74200
+    S0 = 72900
+    K = 72900
     
     # 1. Separated Volatilities
-    realized_vol = 0.146          # ACTUAL movement of the stock (e.g., 12% RV) for path generation
+    realized_vol = 0.159          # ACTUAL movement of the stock (e.g., 12% RV) for path generation
     intraday_iv = 0.17           # PRICING of options intraday (17% IV) for Greeks/hedging triggers
-    eod_iv = 0.184                # PRICING of options at 3:40 PM (15% IV) for final settlement
+    eod_iv = 0.1725                # PRICING of options at 3:40 PM (15% IV) for final settlement
     
     # 2. Time Parameters
-    initial_dte = 1.68
-    eod_dte = 1.0
-    sim_days = initial_dte - eod_dte  # The duration of today's simulation (0.68 days)
+    initial_dte = 2.336
+    eod_dte = 2
+    sim_days = initial_dte - eod_dte  # The duration of today's simulation 
     
     minutes_per_day = 385        # Standard trading minutes (e.g., 9:15 AM to 3:40 PM)
     paths_to_simulate = 2000     # Increased to 2,000 for better statistical stability with unforced variance
-    hedge_ratio = 1.0            # 1.0 = Hedge back to 0 Delta. 0.5 = Partial hedge
+    hedge_ratio = 0.5            # 1.0 = Hedge back to 0 Delta. 0.5 = Partial hedge
 
     print(f"Generating {paths_to_simulate} Paths with {realized_vol*100:.1f}% Realized Volatility...")
     
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     print(f"{'Net PnL (Points)':<20} |  {avg_pnl:<9.2f} |  {med_pnl:<9.2f}")
     print(f"{'Theta Retention (TR)':<20} |  {avg_tr:<8.1f}% |  {med_tr:<8.1f}%")
     print(f"{'Hedges Executed':<20} |  {avg_hedges:<9.1f} |  {med_hedges:<9.1f}")
-    print(f"{'Win Rate':<20} |  {win_rate:.1f}% |  {win_rateMed:.1f}%")
+    #print(f"{'Win Rate':<20} |  {win_rate:.1f}% |  {win_rateMed:.1f}%")
     print("="*45)
     # --- Visualization (First 10 Paths) ---
     paths_to_plot = min(10, paths_to_simulate)
